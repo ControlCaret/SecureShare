@@ -198,14 +198,15 @@ namespace SecureShare
             panelEncryptRSA.Controls.Add(btnSelectPublicKey);
             panelEncryptRSA.Location = new Point(503, 88);
             panelEncryptRSA.Name = "panelEncryptRSA";
-            panelEncryptRSA.Size = new Size(420, 106);
+            panelEncryptRSA.Size = new Size(420, 100);
             panelEncryptRSA.TabIndex = 26;
             // 
             // btnGenerateNewKey
             // 
-            btnGenerateNewKey.Location = new Point(358, 74);
+            btnGenerateNewKey.AutoSize = true;
+            btnGenerateNewKey.Location = new Point(358, 73);
             btnGenerateNewKey.Name = "btnGenerateNewKey";
-            btnGenerateNewKey.Size = new Size(63, 23);
+            btnGenerateNewKey.Size = new Size(63, 25);
             btnGenerateNewKey.TabIndex = 105;
             btnGenerateNewKey.Text = "키 생성";
             btnGenerateNewKey.UseVisualStyleBackColor = true;
@@ -243,7 +244,7 @@ namespace SecureShare
             // labelGenerateNewKey
             // 
             labelGenerateNewKey.AutoSize = true;
-            labelGenerateNewKey.Location = new Point(2, 78);
+            labelGenerateNewKey.Location = new Point(2, 77);
             labelGenerateNewKey.Name = "labelGenerateNewKey";
             labelGenerateNewKey.Size = new Size(47, 15);
             labelGenerateNewKey.TabIndex = 29;
@@ -252,7 +253,7 @@ namespace SecureShare
             // labelEncryptRSAPublicKey
             // 
             labelEncryptRSAPublicKey.AutoSize = true;
-            labelEncryptRSAPublicKey.Location = new Point(4, 47);
+            labelEncryptRSAPublicKey.Location = new Point(4, 46);
             labelEncryptRSAPublicKey.Name = "labelEncryptRSAPublicKey";
             labelEncryptRSAPublicKey.Size = new Size(43, 15);
             labelEncryptRSAPublicKey.TabIndex = 14;
@@ -260,7 +261,7 @@ namespace SecureShare
             // 
             // txtPublicKeyPath
             // 
-            txtPublicKeyPath.Location = new Point(53, 44);
+            txtPublicKeyPath.Location = new Point(53, 43);
             txtPublicKeyPath.Name = "txtPublicKeyPath";
             txtPublicKeyPath.ReadOnly = true;
             txtPublicKeyPath.Size = new Size(299, 23);
@@ -268,9 +269,10 @@ namespace SecureShare
             // 
             // btnSelectPublicKey
             // 
-            btnSelectPublicKey.Location = new Point(358, 43);
+            btnSelectPublicKey.AutoSize = true;
+            btnSelectPublicKey.Location = new Point(358, 42);
             btnSelectPublicKey.Name = "btnSelectPublicKey";
-            btnSelectPublicKey.Size = new Size(63, 23);
+            btnSelectPublicKey.Size = new Size(63, 25);
             btnSelectPublicKey.TabIndex = 27;
             btnSelectPublicKey.Text = "키 찾기";
             btnSelectPublicKey.UseVisualStyleBackColor = true;
@@ -300,6 +302,7 @@ namespace SecureShare
             progressBarMain.Name = "progressBarMain";
             progressBarMain.Size = new Size(326, 23);
             progressBarMain.TabIndex = 102;
+            progressBarMain.Visible = false;
             // 
             // commentPanelDecryptRSA
             // 
@@ -320,14 +323,15 @@ namespace SecureShare
             panelDecryptRSA.Controls.Add(btnSelectPrivateKey);
             panelDecryptRSA.Location = new Point(503, 215);
             panelDecryptRSA.Name = "panelDecryptRSA";
-            panelDecryptRSA.Size = new Size(420, 73);
+            panelDecryptRSA.Size = new Size(420, 100);
             panelDecryptRSA.TabIndex = 103;
             // 
             // btnVerifyKeyPassword
             // 
-            btnVerifyKeyPassword.Location = new Point(358, 38);
+            btnVerifyKeyPassword.AutoSize = true;
+            btnVerifyKeyPassword.Location = new Point(358, 73);
             btnVerifyKeyPassword.Name = "btnVerifyKeyPassword";
-            btnVerifyKeyPassword.Size = new Size(63, 23);
+            btnVerifyKeyPassword.Size = new Size(63, 25);
             btnVerifyKeyPassword.TabIndex = 31;
             btnVerifyKeyPassword.Text = "키 검증";
             btnVerifyKeyPassword.UseVisualStyleBackColor = true;
@@ -335,7 +339,7 @@ namespace SecureShare
             // 
             // txtPrivateKeyPassword
             // 
-            txtPrivateKeyPassword.Location = new Point(53, 38);
+            txtPrivateKeyPassword.Location = new Point(53, 74);
             txtPrivateKeyPassword.Name = "txtPrivateKeyPassword";
             txtPrivateKeyPassword.Size = new Size(299, 23);
             txtPrivateKeyPassword.TabIndex = 30;
@@ -343,7 +347,7 @@ namespace SecureShare
             // labelEnterPrivateKeyPassword
             // 
             labelEnterPrivateKeyPassword.AutoSize = true;
-            labelEnterPrivateKeyPassword.Location = new Point(2, 42);
+            labelEnterPrivateKeyPassword.Location = new Point(2, 77);
             labelEnterPrivateKeyPassword.Name = "labelEnterPrivateKeyPassword";
             labelEnterPrivateKeyPassword.Size = new Size(47, 15);
             labelEnterPrivateKeyPassword.TabIndex = 29;
@@ -352,7 +356,7 @@ namespace SecureShare
             // labelDecryptRSAPrivateKey
             // 
             labelDecryptRSAPrivateKey.AutoSize = true;
-            labelDecryptRSAPrivateKey.Location = new Point(4, 12);
+            labelDecryptRSAPrivateKey.Location = new Point(4, 46);
             labelDecryptRSAPrivateKey.Name = "labelDecryptRSAPrivateKey";
             labelDecryptRSAPrivateKey.Size = new Size(43, 15);
             labelDecryptRSAPrivateKey.TabIndex = 14;
@@ -360,7 +364,7 @@ namespace SecureShare
             // 
             // txtPrivateKeyPath
             // 
-            txtPrivateKeyPath.Location = new Point(53, 9);
+            txtPrivateKeyPath.Location = new Point(53, 43);
             txtPrivateKeyPath.Name = "txtPrivateKeyPath";
             txtPrivateKeyPath.ReadOnly = true;
             txtPrivateKeyPath.Size = new Size(299, 23);
@@ -368,9 +372,10 @@ namespace SecureShare
             // 
             // btnSelectPrivateKey
             // 
-            btnSelectPrivateKey.Location = new Point(358, 8);
+            btnSelectPrivateKey.AutoSize = true;
+            btnSelectPrivateKey.Location = new Point(358, 42);
             btnSelectPrivateKey.Name = "btnSelectPrivateKey";
-            btnSelectPrivateKey.Size = new Size(63, 23);
+            btnSelectPrivateKey.Size = new Size(63, 25);
             btnSelectPrivateKey.TabIndex = 27;
             btnSelectPrivateKey.Text = "키 찾기";
             btnSelectPrivateKey.UseVisualStyleBackColor = true;
@@ -379,8 +384,7 @@ namespace SecureShare
             // MainForm
             // 
             AllowDrop = true;
-            AutoScaleDimensions = new SizeF(7F, 15F);
-            AutoScaleMode = AutoScaleMode.Font;
+            AutoScaleMode = AutoScaleMode.Inherit;
             BackColor = Color.White;
             ClientSize = new Size(984, 561);
             Controls.Add(commentPanelDecryptRSA);

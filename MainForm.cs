@@ -1,5 +1,6 @@
 using PgpCore;
 using System.Security.Cryptography;
+using System.Diagnostics;
 
 namespace SecureShare
 {
@@ -50,8 +51,7 @@ namespace SecureShare
                 {
                     panelEncryptRSA.Location = new Point(12, 354);
                     panelEncryptRSA.Visible = true;
-                    btnEncrypt.Location = new Point(344, 510);
-
+                    btnEncrypt.Location = new Point(344, 480);
 
                     txtPublicKeyPath.Enabled = rbUseExistingKey.Checked;
                     btnSelectPublicKey.Enabled = rbUseExistingKey.Checked;
@@ -62,7 +62,7 @@ namespace SecureShare
                 {
                     panelDecryptRSA.Location = new Point(12, 354);
                     panelDecryptRSA.Visible = true;
-                    btnDecrypt.Location = new Point(344, 450);
+                    btnDecrypt.Location = new Point(344, 480);
                 }
             }
         }
@@ -70,16 +70,28 @@ namespace SecureShare
         // Encrypt button click event
         private async void btnEncrypt_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(txtFilePath.Text) || !File.Exists(txtFilePath.Text)) return;
+            if (string.IsNullOrEmpty(txtFilePath.Text) || !File.Exists(txtFilePath.Text))
+            {
+                MessageBox.Show("암호화할 파일을 먼저 선택해주세요.", "오류", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
 
             if (rbAES.Checked)
             {
-                if (string.IsNullOrEmpty(txtAESPassword.Text)) return;
+                if (string.IsNullOrEmpty(txtAESPassword.Text))
+                {
+                    MessageBox.Show("AES 암호를 입력해주세요.", "오류", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
                 encryptFileAES(txtFilePath.Text, txtAESPassword.Text);
             }
             else if (rbRSA.Checked)
             {
-                if (string.IsNullOrEmpty(txtPublicKeyPath.Text)) return;
+                if (string.IsNullOrEmpty(txtPublicKeyPath.Text))
+                {
+                    MessageBox.Show("공개키 파일을 선택해주세요.", "오류", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
                 await encryptFileRSA(txtFilePath.Text, txtPublicKeyPath.Text);
             }
         }
@@ -87,16 +99,28 @@ namespace SecureShare
         // Decrypt button click event
         private async void btnDecrypt_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(txtFilePath.Text) || !File.Exists(txtFilePath.Text)) return;
+            if (string.IsNullOrEmpty(txtFilePath.Text) || !File.Exists(txtFilePath.Text))
+            {
+                MessageBox.Show("복호화할 파일을 먼저 선택해주세요.", "오류", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
 
             if (rbAES.Checked)
             {
-                if (string.IsNullOrEmpty(txtAESPassword.Text)) return;
+                if (string.IsNullOrEmpty(txtAESPassword.Text))
+                {
+                    MessageBox.Show("AES 암호를 입력해주세요.", "오류", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
                 decryptFileAES(txtFilePath.Text, txtAESPassword.Text);
             }
             else if (rbRSA.Checked)
             {
-                if (string.IsNullOrEmpty(txtPrivateKeyPath.Text)) return;
+                if (string.IsNullOrEmpty(txtPrivateKeyPath.Text))
+                {
+                    MessageBox.Show("개인키 파일을 선택해주세요.", "오류", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
                 await decryptFileRSA(txtFilePath.Text, txtPrivateKeyPath.Text, txtPrivateKeyPassword.Text);
             }
         }
@@ -153,9 +177,13 @@ namespace SecureShare
                 using var fsInput = new FileStream(inputFilePath, FileMode.Open);
                 fsInput.CopyTo(cs);
 
-                MessageBox.Show("AES 암호화 성공: " + outputFilePath, "성공", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("AES 암호화 성공!\n결과 파일: " + outputFilePath, "성공", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                OpenFolderAndSelectFile(outputFilePath);
             }
-            catch (Exception ex) { MessageBox.Show("AES 암호화 오류: " + ex.Message); }
+            catch (Exception ex)
+            {
+                MessageBox.Show("AES 암호화 중 오류가 발생했습니다:\n" + ex.Message, "오류", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         // AES Decryption
@@ -166,9 +194,9 @@ namespace SecureShare
                 string outputFilePath = inputFilePath.EndsWith(".aes") ? inputFilePath[..^4] : inputFilePath + ".decrypted";
                 using var fsInput = new FileStream(inputFilePath, FileMode.Open);
                 byte[] salt = new byte[16];
-                if (fsInput.Read(salt, 0, salt.Length) != salt.Length) throw new Exception("Salt 누락");
+                if (fsInput.Read(salt, 0, salt.Length) != salt.Length) throw new Exception("파일 형식이 올바르지 않습니다 (Salt 누락).");
                 byte[] iv = new byte[16];
-                if (fsInput.Read(iv, 0, iv.Length) != iv.Length) throw new Exception("IV 누락");
+                if (fsInput.Read(iv, 0, iv.Length) != iv.Length) throw new Exception("파일 형식이 올바르지 않습니다 (IV 누락).");
 
                 using var aes = Aes.Create();
                 using var pbkdf2 = new Rfc2898DeriveBytes(password, salt, 100000, HashAlgorithmName.SHA256);
@@ -180,9 +208,13 @@ namespace SecureShare
                 using var cs = new CryptoStream(fsInput, aes.CreateDecryptor(), CryptoStreamMode.Read);
                 cs.CopyTo(fsOutput);
 
-                MessageBox.Show("AES 복호화 성공: " + outputFilePath, "성공", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("AES 복호화 성공!\n결과 파일: " + outputFilePath, "성공", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                OpenFolderAndSelectFile(outputFilePath);
             }
-            catch (Exception ex) { MessageBox.Show("AES 복호화 오류: " + ex.Message); }
+            catch (Exception ex)
+            {
+                MessageBox.Show("AES 복호화 중 오류가 발생했습니다:\n" + ex.Message, "오류", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         // Key Generation
@@ -211,20 +243,24 @@ namespace SecureShare
                     string privPath = Path.Combine(folderDialog.SelectedPath, "privateKey.asc");
 
                     PGP pgp = new PGP();
-                    await pgp.GenerateKeyAsync(new FileInfo(pubPath), new FileInfo(privPath), "SecureShare@User", txtNewKeyPassword.Text);
+                    await pgp.GenerateKeyAsync(new FileInfo(pubPath), new FileInfo(privPath), "SecureShare@localhost", txtNewKeyPassword.Text);
 
                     txtPublicKeyPath.Text = pubPath;
                     rbUseExistingKey.Checked = true;
-                    MessageBox.Show("키 쌍 생성 완료!\n공개키: " + pubPath, "성공", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("RSA 키 쌍이 생성되었습니다!\n\n저장 폴더: " + folderDialog.SelectedPath, "성공", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    OpenFolderAndSelectFile(pubPath);
                 }
-                catch (Exception ex) { MessageBox.Show("키 생성 실패: " + ex.Message); }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("키 생성 중 오류가 발생했습니다:\n" + ex.Message, "오류", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
 
         private void btnSelectPrivateKey_Click(object? sender, EventArgs e)
         {
             using OpenFileDialog openFileDialog = new();
-            openFileDialog.Filter = "개인키 파일 (*.asc;*.priv)|*.asc;*.priv|모든 파일 (*.*)|*.*";
+            openFileDialog.Filter = "개인키 파일 (*.asc;*.key;*.priv)|*.asc;*.key;*.priv|모든 파일 (*.*)|*.*";
             if (openFileDialog.ShowDialog() == DialogResult.OK)
                 txtPrivateKeyPath.Text = openFileDialog.FileName;
         }
@@ -234,7 +270,7 @@ namespace SecureShare
         {
             if (string.IsNullOrEmpty(txtPrivateKeyPath.Text) || !File.Exists(txtPrivateKeyPath.Text))
             {
-                MessageBox.Show("개인키 파일을 먼저 선택하세요.");
+                MessageBox.Show("개인키 파일을 먼저 선택하세요.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -242,9 +278,18 @@ namespace SecureShare
             {
                 using FileStream privFS = new FileStream(txtPrivateKeyPath.Text, FileMode.Open, FileAccess.Read);
                 EncryptionKeys keys = new EncryptionKeys(privFS, txtPrivateKeyPassword.Text);
-                MessageBox.Show("암호가 확인되었습니다!", "인증 성공", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                if (keys.SecretKeys == null || keys.SecretKeys.Count == 0)
+                {
+                    throw new Exception("유효한 개인키를 찾을 수 없거나 암호가 일치하지 않습니다.");
+                }
+
+                MessageBox.Show("키 암호가 성공적으로 인증되었습니다!", "인증 성공", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
-            catch { MessageBox.Show("암호가 틀렸거나 잘못된 키 파일입니다.", "인증 실패", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+            catch (Exception ex)
+            {
+                MessageBox.Show("인증 실패: 암호가 틀렸거나 잘못된 키 파일입니다.\n" + ex.Message, "오류", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         // RSA Encryption
@@ -261,9 +306,13 @@ namespace SecureShare
                 PGP pgp = new PGP(keys);
                 await pgp.EncryptStreamAsync(inFS, outFS);
 
-                MessageBox.Show("RSA 암호화 완료: " + outputFilePath, "성공", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("RSA 암호화 성공!\n결과 파일: " + outputFilePath, "성공", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                OpenFolderAndSelectFile(outputFilePath);
             }
-            catch (Exception ex) { MessageBox.Show("RSA 암호화 오류: " + ex.Message); }
+            catch (Exception ex)
+            {
+                MessageBox.Show("RSA 암호화 중 오류가 발생했습니다:\n" + ex.Message, "오류", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         // RSA Decryption
@@ -280,9 +329,28 @@ namespace SecureShare
                 PGP pgp = new PGP(keys);
                 await pgp.DecryptStreamAsync(inFS, outFS);
 
-                MessageBox.Show("RSA 복호화 완료: " + outputFilePath, "성공", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("RSA 복호화 성공!\n결과 파일: " + outputFilePath, "성공", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                OpenFolderAndSelectFile(outputFilePath);
             }
-            catch (Exception ex) { MessageBox.Show("RSA 복호화 오류: " + ex.Message); }
+            catch (Exception ex)
+            {
+                MessageBox.Show("RSA 복호화 중 오류가 발생했습니다:\n" + ex.Message, "오류", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void OpenFolderAndSelectFile(string filePath)
+        {
+            try
+            {
+                if (File.Exists(filePath))
+                {
+                    Process.Start("explorer.exe", $"/select,\"{filePath}\"");
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("폴더 열기 오류: " + ex.Message);
+            }
         }
     }
 }
