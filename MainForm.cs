@@ -249,6 +249,7 @@ namespace SecureShare
                     rbUseExistingKey.Checked = true;
                     MessageBox.Show("RSA 키 쌍이 생성되었습니다!\n\n저장 폴더: " + folderDialog.SelectedPath, "성공", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     OpenFolderAndSelectFile(pubPath);
+                    txtNewKeyPassword.Text = string.Empty;
                 }
                 catch (Exception ex)
                 {
