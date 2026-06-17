@@ -352,5 +352,37 @@ namespace SecureShare
                 Debug.WriteLine("폴더 열기 오류: " + ex.Message);
             }
         }
+
+        private void txtPublicKeyPath_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data?.GetDataPresent(DataFormats.FileDrop) == true)
+                e.Effect = DragDropEffects.Copy;
+            else
+                e.Effect = DragDropEffects.None;
+        }
+
+        private void txtPublicKeyPath_DragDrop(object sender, DragEventArgs e)
+        {
+            if (e.Data?.GetData(DataFormats.FileDrop) is string[] files && files.Length > 0)
+            {
+                txtPublicKeyPath.Text = files[0];
+            }
+        }
+
+        private void txtPrivateKeyPath_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data?.GetDataPresent(DataFormats.FileDrop) == true)
+                e.Effect = DragDropEffects.Copy;
+            else
+                e.Effect = DragDropEffects.None;
+        }
+
+        private void txtPrivateKeyPath_DragDrop(object sender, DragEventArgs e)
+        {
+            if (e.Data?.GetData(DataFormats.FileDrop) is string[] files && files.Length > 0)
+            {
+                txtPrivateKeyPath.Text = files[0];
+            }
+        }
     }
 }

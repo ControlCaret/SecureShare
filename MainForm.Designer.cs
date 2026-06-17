@@ -261,11 +261,14 @@ namespace SecureShare
             // 
             // txtPublicKeyPath
             // 
+            txtPublicKeyPath.AllowDrop = true;
             txtPublicKeyPath.Location = new Point(53, 43);
             txtPublicKeyPath.Name = "txtPublicKeyPath";
             txtPublicKeyPath.ReadOnly = true;
             txtPublicKeyPath.Size = new Size(299, 23);
             txtPublicKeyPath.TabIndex = 28;
+            txtPublicKeyPath.DragDrop += txtPublicKeyPath_DragDrop;
+            txtPublicKeyPath.DragEnter += txtPublicKeyPath_DragEnter;
             // 
             // btnSelectPublicKey
             // 
@@ -364,11 +367,14 @@ namespace SecureShare
             // 
             // txtPrivateKeyPath
             // 
+            txtPrivateKeyPath.AllowDrop = true;
             txtPrivateKeyPath.Location = new Point(53, 43);
             txtPrivateKeyPath.Name = "txtPrivateKeyPath";
             txtPrivateKeyPath.ReadOnly = true;
             txtPrivateKeyPath.Size = new Size(299, 23);
             txtPrivateKeyPath.TabIndex = 28;
+            txtPrivateKeyPath.DragDrop += txtPrivateKeyPath_DragDrop;
+            txtPrivateKeyPath.DragEnter += txtPrivateKeyPath_DragEnter;
             // 
             // btnSelectPrivateKey
             // 
